@@ -36,7 +36,7 @@ with Client(TOKEN, target=INVEST_GRPC_API_SANDBOX) as client:
     csv_filepath = download_candles(
         client, 
         figi, 
-        days=30, 
+        days=360, 
         candle_interval_type=CandleInterval.CANDLE_INTERVAL_HOUR, 
         path=DATA_PATH
     )

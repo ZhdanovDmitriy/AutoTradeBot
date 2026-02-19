@@ -18,7 +18,8 @@ def run_strategy_test(strategy, data_path: str):
     return results
 
 if __name__ == '__main__':
-    data_dir = Path(r"C:\Users\dzhda\OneDrive\Рабочий стол\автотрейдинг\TradeBot\src\data\test_candles_WUSH\TCS00A105EX7")
+    #data_dir = Path(r"C:\Users\dzhda\OneDrive\Рабочий стол\автотрейдинг\TradeBot\src\data\test_candles_WUSH\TCS00A105EX7")
+    data_dir = Path(r"C:\Users\dzhda\OneDrive\Рабочий стол\автотрейдинг\TradeBot\src\data\test_candles_SLVRUB\BBG000VHQTD1")
     csv_file = list(data_dir.glob('CANDLE_INTERVAL_HOUR-*.csv'))[0]
     
     print(f"📊 Запуск бэктеста на файле: {csv_file.name}")
@@ -29,11 +30,18 @@ if __name__ == '__main__':
         MovingAverageCrossover(short_period=5, long_period=20),
         RandomStrategy(buy_probability=0.05, sell_probability=0.05, seed=42),  # ← Новая
         RandomStrategy(buy_probability=0.1, sell_probability=0.1, seed=42),    # ← Новая
-        RandomStrategy(buy_probability=0.1, sell_probability=0.1, seed=52),    # ← Новая
-        RandomStrategy(buy_probability=0.1, sell_probability=0.1, seed=62),    # ← Новая
-        RandomStrategy(buy_probability=0.1, sell_probability=0.1, seed=72),    # ← Новая
-        RandomStrategy(buy_probability=0.1, sell_probability=0.1, seed=82),    # ← Новая
-        RandomStrategy(buy_probability=0.1, sell_probability=0.1, seed=92),    # ← Новая
+        RandomStrategy(buy_probability=0.1, sell_probability=0.2, seed=52),    # ← Новая
+        RandomStrategy(buy_probability=0.1, sell_probability=0.3, seed=62),    # ← Новая
+        RandomStrategy(buy_probability=0.1, sell_probability=0.4, seed=72),    # ← Новая
+        RandomStrategy(buy_probability=0.1, sell_probability=0.5, seed=82),    # ← Новая
+        RandomStrategy(buy_probability=0.1, sell_probability=0.6, seed=92),    # ← Новая
+        RandomStrategy(buy_probability=0.05, sell_probability=0.05, seed=42),  # ← Новая
+        RandomStrategy(buy_probability=0.1, sell_probability=0.1, seed=42),    # ← Новая
+        RandomStrategy(buy_probability=0.2, sell_probability=0.1, seed=52),    # ← Новая
+        RandomStrategy(buy_probability=0.3, sell_probability=0.1, seed=62),    # ← Новая
+        RandomStrategy(buy_probability=0.4, sell_probability=0.1, seed=72),    # ← Новая
+        RandomStrategy(buy_probability=0.5, sell_probability=0.1, seed=82),    # ← Новая
+        RandomStrategy(buy_probability=0.6, sell_probability=0.1, seed=92),    # ← Новая
     ]
     
     all_results = []

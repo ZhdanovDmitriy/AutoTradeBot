@@ -25,6 +25,7 @@ if os.path.exists(DATA_PATH):
 Path(DATA_PATH).mkdir(parents=True, exist_ok=True)
 
 with Client(TOKEN, target=INVEST_GRPC_API_SANDBOX) as client:
+    '''
     print(client.users.get_accounts())
     print(get_balance(client, ACCOUNT_ID))
     
@@ -45,6 +46,32 @@ with Client(TOKEN, target=INVEST_GRPC_API_SANDBOX) as client:
         draw_candles(
             csv_filepath,
             title=f"WUSH ({figi})",
+            show_volume=False
+        )
+        plt.show()
+    else:
+        print("Не удалось создать график - нет данных")
+    '''
+
+    DATA_PATH = R"C:\Users\dzhda\OneDrive\Рабочий стол\автотрейдинг\TradeBot\src\data\test_candles_SLVRUB"
+
+    figi = get_figi_by_ticker(client, "SLVRUB", InstrumentType.UNSPECIFIED)
+    print("FIGI:", figi)
+    
+    #print(add_money_sandbox(client, ACCOUNT_ID, 10000))
+
+    csv_filepath = download_candles(
+        client, 
+        figi, 
+        days=360, 
+        candle_interval_type=CandleInterval.CANDLE_INTERVAL_HOUR, 
+        path=DATA_PATH
+    )
+    
+    if csv_filepath:
+        draw_candles(
+            csv_filepath,
+            title=f"SLVRUB ({figi})",
             show_volume=False
         )
         plt.show()

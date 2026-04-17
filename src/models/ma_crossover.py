@@ -3,7 +3,7 @@ from src.models.base import BaseStrategy, Candle, TradeSignal, Signal
 import numpy as np
 
 class MovingAverageCrossover(BaseStrategy):
-    def __init__(self, short_period: int = 10, long_period: int = 30):
+    def __init__(self, short_period: int = 10, long_period: int = 20):
         # ← Измените эту строку - добавляем параметры в имя
         super().__init__(f'MA_Crossover_{short_period}_{long_period}', 
                         {'short': short_period, 'long': long_period})

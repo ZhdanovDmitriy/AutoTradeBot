@@ -12,10 +12,10 @@ class StrategyTrainer:
         best_result = None
         best_params = None
 
-        ma_range = range(3, 30)  # можно расширить до 100
-        buy_range = [0.005, 0.007, 0.01]
-        sell_range = [0.005, 0.007, 0.01]
-        stop_range = [0.01, 0.015, 0.02]
+        ma_range = range(3, 100)  # можно расширить до 100
+        buy_range = [0.004, 0.006, 0.0002]
+        sell_range = [0.004, 0.006, 0.0002]
+        stop_range = [0.008, 0.02, 0.0001]
 
         for ma, buy, sell, stop in itertools.product(
             ma_range, buy_range, sell_range, stop_range

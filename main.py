@@ -98,11 +98,11 @@ def train_model(algorithm, train_candles):
         optimizer = NelderMeadOptimizer(train_candles)
 
         initial_simplex = [
-            [10, 0.005, 0.01, 0.03],
-            [15, 0.007, 0.012, 0.04],
-            [20, 0.006, 0.011, 0.05],
-            [12, 0.008, 0.013, 0.04],
-            [18, 0.009, 0.014, 0.035],
+            [5, 0.0045, 0.005, 0.01],
+            [8, 0.0055, 0.005, 0.008],
+            [10, 0.0045, 0.0045, 0.014],
+            [12, 0.0055, 0.0055, 0.018],
+            [18, 0.0050, 0.005, 0.01],
         ]
 
         best_params = optimizer.optimize(initial_simplex, max_iter=30)

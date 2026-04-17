@@ -1,7 +1,7 @@
 import itertools
+import numpy as np
 from src.backtest.engine import BacktestEngine
 from src.models.mean_reversion import MeanReversionStrategy
-
 
 class StrategyTrainer:
     def __init__(self, candles, initial_capital=1_000_000):
@@ -12,22 +12,35 @@ class StrategyTrainer:
         best_result = None
         best_params = None
 
-        ma_range = range(3, 100)  # можно расширить до 100
-        buy_range = [0.004, 0.006, 0.0002]
-        sell_range = [0.004, 0.006, 0.0002]
-        stop_range = [0.008, 0.02, 0.0001]
+        # Формат: (min, max, step)
+        param_spaces = {
+            "ma":   (3, 30, 2),          # шаг 1 для целых
+            "buy":  (0.002, 0.014, 0.003),
+            "sell": (0.002, 0.014, 0.003),
+            "stop": (0.015, 0.025, 0.004)
+        }
 
-        for ma, buy, sell, stop in itertools.product(
-            ma_range, buy_range, sell_range, stop_range
-        ):
-            if buy >= sell:
-                continue
+        # 1. Генерация сетки значений
+        grids = {}
+        for name, (start, stop, step) in param_spaces.items():
+            if isinstance(start, float):
+                # Округляем до 6 знаков, чтобы избежать багов float precision (0.0040000000001)
+                grids[name] = np.round(np.arange(start, stop + step/2, step), 6)
+            else:
+                grids[name] = range(start, stop + 1, step)
+
+        # (Опционально) Вывод количества комбинаций для контроля
+        total = len(grids["ma"]) * len(grids["buy"]) * len(grids["sell"]) * len(grids["stop"])
+        print(f"Исследуемых точек: {total}")
+
+        # 2. Перебор сетки
+        for ma, buy, sell, stop in itertools.product(grids["ma"], grids["buy"], grids["sell"], grids["stop"]):
 
             strategy = MeanReversionStrategy(
-                ma_length=ma,
-                buy_threshold=buy,
-                sell_threshold=sell,
-                stop_loss=stop
+                ma_length=int(ma),
+                buy_threshold=float(buy),
+                sell_threshold=float(sell),
+                stop_loss=float(stop)
             )
 
             result = self.engine.run(strategy, self.candles)
@@ -36,10 +49,10 @@ class StrategyTrainer:
             if best_result is None or profit > best_result:
                 best_result = profit
                 best_params = {
-                    'ma': ma,
-                    'buy': buy,
-                    'sell': sell,
-                    'stop': stop
+                    'ma': int(ma),
+                    'buy': float(buy),
+                    'sell': float(sell),
+                    'stop': float(stop)
                 }
 
         return best_params, best_result

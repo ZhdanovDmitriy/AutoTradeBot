@@ -9,10 +9,10 @@ class NelderMeadOptimizer:
         self.engine = BacktestEngine(initial_capital=initial_capital)
 
         self.bounds = {
-            "ma": (3, 100),
-            "buy": (0.004, 0.006),
-            "sell": (0.004, 0.006),
-            "stop": (0.008, 0.02)
+            "ma":   (3, 30),
+            "buy":  (0.000, 0.0135),
+            "sell": (0.000, 0.0135),
+            "stop": (0.015, 0.025)
         }
 
     # --- вспомогательный метод для проекции в границы ---
@@ -36,9 +36,6 @@ class NelderMeadOptimizer:
         buy = np.clip(buy, *self.bounds["buy"])
         sell = np.clip(sell, *self.bounds["sell"])
         stop = np.clip(stop, *self.bounds["stop"])
-
-        if buy >= sell:
-            return 1e6  # штраф за некорректную логику
 
         strategy = MeanReversionStrategy(
             ma_length=ma,

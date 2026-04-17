@@ -81,12 +81,12 @@ def train_model(algorithm, train_candles):
     print_header("ОБУЧЕНИЕ МОДЕЛИ")
 
     if algorithm == "grid":
-        print("Метод: СЕТОЧНЫЙ ПЕРЕБОР (Grid Search)\n")
+        print("Метод: ПОИСК ПО СЕТКЕ\n")
 
         trainer = StrategyTrainer(train_candles)
         best_params, best_profit = trainer.train()
 
-        print("\n🔥 Лучшие параметры:")
+        print("\nЛучшие параметры:")
         print(best_params)
         print(f"Доходность (train): {best_profit:.2f}%")
 
@@ -98,16 +98,16 @@ def train_model(algorithm, train_candles):
         optimizer = NelderMeadOptimizer(train_candles)
 
         initial_simplex = [
-            [5, 0.0045, 0.005, 0.01],
-            [8, 0.0055, 0.005, 0.008],
-            [10, 0.0045, 0.0045, 0.014],
-            [12, 0.0055, 0.0055, 0.018],
-            [18, 0.0050, 0.005, 0.01],
+            [5,  0.002, 0.002, 0.015],
+            [8,  0.007, 0.007, 0.010],
+            [10, 0.008, 0.002, 0.014],
+            [12, 0.013, 0.012, 0.020],
+            [18, 0.003, 0.002, 0.010],
         ]
 
         best_params = optimizer.optimize(initial_simplex, max_iter=30)
 
-        print("\n🔥 Лучшие параметры:")
+        print("\nЛучшие параметры:")
         print(best_params)
 
         return best_params
@@ -130,7 +130,7 @@ def test_model(params, test_candles):
 
     results = engine.run(strategy, test_candles)
 
-    print("\n📊 Результаты тестирования:")
+    print("\nРезультаты тестирования:")
     print(results['metrics'])
 
     return results
@@ -143,7 +143,7 @@ def plot_results(csv_path, trades, ma_length):
         csv_path,
         trades,
         ma_length=ma_length,
-        title="Цена + MA + сделки"
+        title=""
     )
 
     plt.show()
@@ -181,7 +181,7 @@ def run(
     results = test_model(params, test)
 
     # 6. график
-    plot_results(csv_path, results['trades'], params['ma'])
+    #plot_results(csv_path, results['trades'], params['ma'])
 
     print_header("ЗАВЕРШЕНО")
 
@@ -190,7 +190,62 @@ def run(
 
 if __name__ == "__main__":
     run(
+        ticker="GLDRUB",
+
+        train_start=datetime(2024, 1, 1, tzinfo=timezone.utc),
+        train_end=datetime(2025, 1, 1, tzinfo=timezone.utc),
+
+        test_start=datetime(2025, 1, 1, tzinfo=timezone.utc),
+        test_end=datetime(2026, 1, 1, tzinfo=timezone.utc),
+
+        algorithm="grid" #nm или grid
+    )
+    run(
+        ticker="GLDRUB",
+
+        train_start=datetime(2024, 1, 1, tzinfo=timezone.utc),
+        train_end=datetime(2025, 1, 1, tzinfo=timezone.utc),
+
+        test_start=datetime(2025, 1, 1, tzinfo=timezone.utc),
+        test_end=datetime(2026, 1, 1, tzinfo=timezone.utc),
+
+        algorithm="nm" #nm или grid
+    )
+    run(
         ticker="WUSH",
+
+        train_start=datetime(2024, 1, 1, tzinfo=timezone.utc),
+        train_end=datetime(2025, 1, 1, tzinfo=timezone.utc),
+
+        test_start=datetime(2025, 1, 1, tzinfo=timezone.utc),
+        test_end=datetime(2026, 1, 1, tzinfo=timezone.utc),
+
+        algorithm="grid" #nm или grid
+    )
+    run(
+        ticker="WUSH",
+
+        train_start=datetime(2024, 1, 1, tzinfo=timezone.utc),
+        train_end=datetime(2025, 1, 1, tzinfo=timezone.utc),
+
+        test_start=datetime(2025, 1, 1, tzinfo=timezone.utc),
+        test_end=datetime(2026, 1, 1, tzinfo=timezone.utc),
+
+        algorithm="nm" #nm или grid
+    )
+    run(
+        ticker="SBERP",
+
+        train_start=datetime(2024, 1, 1, tzinfo=timezone.utc),
+        train_end=datetime(2025, 1, 1, tzinfo=timezone.utc),
+
+        test_start=datetime(2025, 1, 1, tzinfo=timezone.utc),
+        test_end=datetime(2026, 1, 1, tzinfo=timezone.utc),
+
+        algorithm="grid" #nm или grid
+    )
+    run(
+        ticker="SBERP",
 
         train_start=datetime(2024, 1, 1, tzinfo=timezone.utc),
         train_end=datetime(2025, 1, 1, tzinfo=timezone.utc),

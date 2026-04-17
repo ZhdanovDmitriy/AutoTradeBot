@@ -53,9 +53,7 @@ with Client(TOKEN, target=INVEST_GRPC_API_SANDBOX) as client:
         print("Не удалось создать график - нет данных")
     '''
 
-    DATA_PATH = R"C:\Users\dzhda\OneDrive\Рабочий стол\автотрейдинг\TradeBot\src\data\test_candles_SLVRUB"
-
-    figi = get_figi_by_ticker(client, "SLVRUB", InstrumentType.UNSPECIFIED)
+    figi = get_figi_by_ticker(client, "WUSH", InstrumentType.UNSPECIFIED)
     print("FIGI:", figi)
     
     #print(add_money_sandbox(client, ACCOUNT_ID, 10000))
@@ -71,7 +69,7 @@ with Client(TOKEN, target=INVEST_GRPC_API_SANDBOX) as client:
     if csv_filepath:
         draw_candles(
             csv_filepath,
-            title=f"SLVRUB ({figi})",
+            title=f"WUSH ({figi})",
             show_volume=False
         )
         plt.show()

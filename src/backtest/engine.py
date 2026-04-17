@@ -40,7 +40,7 @@ class BacktestEngine:
             signal = strategy.on_candle(candle, history)
             
             if signal.signal == Signal.BUY and portfolio.position == 0:
-                portfolio.buy(signal.price, candle.time)
+                portfolio.buy(signal.price, candle.time,fraction=0.1)
             elif signal.signal == Signal.SELL and portfolio.position > 0:
                 portfolio.sell(signal.price, candle.time)
             

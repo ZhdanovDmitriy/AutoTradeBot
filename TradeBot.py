@@ -16,7 +16,8 @@ from t_tech.invest import CandleInterval
 TOKEN = os.getenv("TINKOFF_TOKEN")
 ACCOUNT_ID = os.getenv("TINKOFF_ACCOUNT")
 
-DATA_PATH = R"C:\Users\dzhda\OneDrive\Рабочий стол\автотрейдинг\TradeBot\src\data\test_candles_WUSH"
+DATA_PATH = R"C:\Users\dzhda\OneDrive\Рабочий стол\автотрейдинг\TradeBot\src\data\test_candles_GOLD"
+ticker = "GLDRUB"
 
 if os.path.exists(DATA_PATH):
     print(f"Очищаем старый кэш: {DATA_PATH}")
@@ -53,7 +54,7 @@ with Client(TOKEN, target=INVEST_GRPC_API_SANDBOX) as client:
         print("Не удалось создать график - нет данных")
     '''
 
-    figi = get_figi_by_ticker(client, "WUSH", InstrumentType.UNSPECIFIED)
+    figi = get_figi_by_ticker(client, ticker, InstrumentType.UNSPECIFIED)
     print("FIGI:", figi)
     
     #print(add_money_sandbox(client, ACCOUNT_ID, 10000))
@@ -69,7 +70,7 @@ with Client(TOKEN, target=INVEST_GRPC_API_SANDBOX) as client:
     if csv_filepath:
         draw_candles(
             csv_filepath,
-            title=f"WUSH ({figi})",
+            title=f"{ticker} ({figi})",
             show_volume=False
         )
         plt.show()

@@ -2,13 +2,13 @@ from pathlib import Path
 from src.backtest.engine import BacktestEngine
 from src.models.mean_reversion import MeanReversionStrategy
 
-DATA_PATH = Path(r"src\data\test_candles_WUSH\TCS00A105EX7\CANDLE_INTERVAL_HOUR-1745323200-1776427200.csv")
+DATA_PATH = Path(r"src\data\test_candles_GOLD\BBG000VJ5YR4\CANDLE_INTERVAL_HOUR-1745326800-1776430800.csv")
 
 BEST_PARAMS = {
     'ma': 5,
-    'buy': 0.007,
-    'sell': 0.001,
-    'stop': 0.01
+    'buy': 0.005497702598571777,
+    'sell': 0.010497702598571777,
+    'stop': 0.012424846649169926
 }
 
 if __name__ == "__main__":

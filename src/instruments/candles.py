@@ -22,7 +22,6 @@ def download_candles(client, cur_figi, days, candle_interval_type, path):
     figi_dir = cache_path / cur_figi
     
     if figi_dir.exists():
-        print(f"🗑️  Очищаем старый кэш: {figi_dir}")
         shutil.rmtree(figi_dir)
     
     figi_dir.mkdir(parents=True, exist_ok=True)
@@ -31,9 +30,6 @@ def download_candles(client, cur_figi, days, candle_interval_type, path):
     market_data_cache = MarketDataCache(settings=settings, services=client)
     
     candles_list = []
-    
-    print(f"📥 Загрузка свечей для FIGI: {cur_figi}...")
-    print(f"📅 Период: {now() - timedelta(days=days)} → {now()}")
     
     try:
         for candle in market_data_cache.get_all_candles(
@@ -88,10 +84,6 @@ def download_candles(client, cur_figi, days, candle_interval_type, path):
     
     # 🔥 Сохраняем словари как JSON-строки
     df.to_csv(filepath, index=False, encoding='utf-8')
-    
-    print(f"\n✅ Свечи сохранены в: {filepath}")
-    print(f"📊 Всего свечей: {len(df)}")
-    print(f"📈 Диапазон: {df['time'].min()} → {df['time'].max()}")
     
     return str(filepath)
 
@@ -173,9 +165,6 @@ def load_candle_data(filepath):
         print(f"⚠️  Файл: {filepath}")
         print(f"📊 Строк всего: {len(pd.read_csv(filepath))}")
         raise ValueError("Нет валидных данных для отображения после парсинга!")
-    
-    print(f"✅ Загружено {len(df)} валидных свечей")
-    print(f"💰 Диапазон цен: {df['close'].min():.2f} - {df['close'].max():.2f}")
     
     return df
 

@@ -18,7 +18,7 @@ def split_data(candles):
     return train, test
 
 # === CONFIG ===
-DATA_PATH = Path(r"src\data\test_candles_WUSH\TCS00A105EX7\CANDLE_INTERVAL_HOUR-1745323200-1776427200.csv")
+DATA_PATH = Path(r"src\data\test_candles_GOLD\BBG000VJ5YR4\CANDLE_INTERVAL_HOUR-1745326800-1776430800.csv")
 START_CAPITAL = 1_000_000
 
 if __name__ == "__main__":

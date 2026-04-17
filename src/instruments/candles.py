@@ -251,3 +251,97 @@ def draw_candles(filepath, title="Candlestick Chart", figsize=(14, 8),
         print(f"📁 График сохранен в: {save_path}")
     
     return fig, ax1
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def draw_candles_with_trades(csv_path, trades, ma_length=20, title="Candles with Trades"):
+    df = pd.read_csv(csv_path)
+
+    df['time'] = pd.to_datetime(df['time'])
+
+    # парсим цену
+    def parse_price(x):
+        if isinstance(x, str):
+            import ast
+            d = ast.literal_eval(x)
+            return d['units'] + d['nano'] / 1e9
+        return float(x)
+
+    df['close'] = df['close'].apply(parse_price)
+
+    # --- считаем MA ---
+    df['ma'] = df['close'].rolling(window=ma_length).mean()
+
+    plt.figure(figsize=(15, 7))
+
+    # цена
+    plt.plot(df['time'], df['close'], label='Price', linewidth=1)
+
+    # MA линия
+    plt.plot(df['time'], df['ma'], linestyle='--', label=f'MA({ma_length})')
+
+    # --- сделки ---
+    buy_times = []
+    buy_prices = []
+
+    sell_times = []
+    sell_prices = []
+
+    for trade in trades:
+        t = pd.to_datetime(trade['time'])
+        price = trade['price']
+
+        if trade['type'] == 'BUY':
+            buy_times.append(t)
+            buy_prices.append(price)
+        else:
+            sell_times.append(t)
+            sell_prices.append(price)
+
+    # один вызов = один цвет
+    plt.scatter(
+        buy_times,
+        buy_prices,
+        marker='v',
+        s=120,
+        color='green',
+        label='BUY',
+        zorder=5
+    )
+
+    plt.scatter(
+        sell_times,
+        sell_prices,
+        marker='v',
+        s=120,
+        color='red',
+        label='SELL',
+        zorder=5
+    )
+
+    # --- убираем дубли легенды ---
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = dict(zip(labels, handles))
+
+    # вручную задаём цвета (иначе matplotlib может одинаково покрасить)
+    for handle, label in zip(by_label.values(), by_label.keys()):
+        if label == 'BUY':
+            handle.set_color('green')
+        elif label == 'SELL':
+            handle.set_color('red')
+
+    plt.legend(by_label.values(), by_label.keys())
+
+    plt.title(title)
+    plt.xlabel("Time")
+    plt.ylabel("Price")
+    plt.grid()
+
+    plt.tight_layout()

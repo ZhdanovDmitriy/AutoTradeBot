@@ -8,6 +8,7 @@ from t_tech.invest import Client, CandleInterval
 from t_tech.invest.constants import INVEST_GRPC_API_SANDBOX
 
 from src.instruments.figi import get_figi_by_ticker
+from src.instruments.candles import draw_candles_with_trades
 from src.enums.instrument_types import InstrumentType
 from src.instruments.candles import download_candles, draw_candles
 
@@ -67,7 +68,7 @@ def download_data(ticker):
         csv_path = download_candles(
             client,
             figi,
-            days=365,
+            days=1000,
             candle_interval_type=CandleInterval.CANDLE_INTERVAL_HOUR,
             path=str(DATA_PATH)
         )
@@ -97,11 +98,11 @@ def train_model(algorithm, train_candles):
         optimizer = NelderMeadOptimizer(train_candles)
 
         initial_simplex = [
-            [10, 0.005, 0.01, 0.01],
-            [15, 0.007, 0.012, 0.015],
-            [20, 0.006, 0.011, 0.02],
-            [12, 0.008, 0.013, 0.012],
-            [18, 0.009, 0.014, 0.018],
+            [10, 0.005, 0.01, 0.03],
+            [15, 0.007, 0.012, 0.04],
+            [20, 0.006, 0.011, 0.05],
+            [12, 0.008, 0.013, 0.04],
+            [18, 0.009, 0.014, 0.035],
         ]
 
         best_params = optimizer.optimize(initial_simplex, max_iter=30)
@@ -135,14 +136,16 @@ def test_model(params, test_candles):
     return results
 
 
-def plot_results(csv_path):
-    print_header("ГРАФИК")
+def plot_results(csv_path, trades, ma_length):
+    print_header("ГРАФИК СДЕЛОК")
 
-    draw_candles(
+    draw_candles_with_trades(
         csv_path,
-        title="График свечей",
-        show_volume=False
+        trades,
+        ma_length=ma_length,
+        title="Цена + MA + сделки"
     )
+
     plt.show()
 
 
@@ -178,7 +181,7 @@ def run(
     results = test_model(params, test)
 
     # 6. график
-    plot_results(csv_path)
+    plot_results(csv_path, results['trades'], params['ma'])
 
     print_header("ЗАВЕРШЕНО")
 
@@ -189,11 +192,11 @@ if __name__ == "__main__":
     run(
         ticker="WUSH",
 
-        train_start=datetime(2025, 11, 1, tzinfo=timezone.utc),
-        train_end=datetime(2026, 1, 1, tzinfo=timezone.utc),
+        train_start=datetime(2024, 1, 1, tzinfo=timezone.utc),
+        train_end=datetime(2025, 1, 1, tzinfo=timezone.utc),
 
-        test_start=datetime(2026, 1, 2, tzinfo=timezone.utc),
-        test_end=datetime(2026, 3, 1, tzinfo=timezone.utc),
+        test_start=datetime(2025, 1, 1, tzinfo=timezone.utc),
+        test_end=datetime(2026, 1, 1, tzinfo=timezone.utc),
 
-        algorithm="grid" #nm или grid
+        algorithm="nm" #nm или grid
     )

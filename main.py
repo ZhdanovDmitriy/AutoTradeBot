@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from pathlib import Path
 from datetime import datetime
 import shutil
@@ -40,7 +41,6 @@ def split_data(candles, train_start, train_end, test_start, test_end):
     for c in candles:
         t = datetime.fromisoformat(c.time.replace("Z", "+00:00"))
 
-        # приводим к UTC (на всякий случай)
         if t.tzinfo is None:
             t = t.replace(tzinfo=timezone.utc)
 
@@ -88,7 +88,7 @@ def train_model(algorithm, train_candles):
 
         print("\nЛучшие параметры:")
         print(best_params)
-        print(f"Доходность (train): {best_profit:.2f}%")
+        print(f"Доходность: {best_profit:.2f}%")
 
         return best_params
 
@@ -96,19 +96,33 @@ def train_model(algorithm, train_candles):
         print("Метод: НЕЛДЕР–МИД\n")
 
         optimizer = NelderMeadOptimizer(train_candles)
-
+        '''
         initial_simplex = [
-            [5,  0.002, 0.002, 0.015],
+            [5,  0.001, 0.013, 0.015],
+            [8,  0.003, 0.003, 0.016],
+            [5, 0.003, 0.004, 0.014],
+            [12, 0.013, 0.012, 0.022],
+            [13, 0.010, 0.010, 0.019],
+        ]
+        '''
+        initial_simplex = [
+            [10,  0.002, 0.002, 0.015],
             [8,  0.007, 0.007, 0.010],
-            [10, 0.008, 0.002, 0.014],
-            [12, 0.013, 0.012, 0.020],
+            [5, 0.008, 0.004, 0.014],
+            [11, 0.004, 0.012, 0.016],
             [18, 0.003, 0.002, 0.010],
         ]
+        
 
-        best_params = optimizer.optimize(initial_simplex, max_iter=30)
+        best_params = optimizer.optimize(initial_simplex, max_iter=50)
 
         print("\nЛучшие параметры:")
-        print(best_params)
+        sig_fig_keys = {'buy', 'sell', 'stop'}
+
+        print({
+            k: f"{v:.2g}" if k in sig_fig_keys and isinstance(v, (float, np.floating)) else v 
+            for k, v in best_params.items()
+        })
 
         return best_params
 
@@ -181,7 +195,7 @@ def run(
     results = test_model(params, test)
 
     # 6. график
-    #plot_results(csv_path, results['trades'], params['ma'])
+    plot_results(csv_path, results['trades'], params['ma'])
 
     print_header("ЗАВЕРШЕНО")
 
@@ -190,6 +204,18 @@ def run(
 
 if __name__ == "__main__":
     run(
+        ticker="SBERP",
+
+        train_start=datetime(2024, 1, 1, tzinfo=timezone.utc),
+        train_end=datetime(2025, 1, 1, tzinfo=timezone.utc),
+
+        test_start=datetime(2025, 1, 1, tzinfo=timezone.utc),
+        test_end=datetime(2026, 1, 1, tzinfo=timezone.utc),
+
+        algorithm="nm" #nm или grid
+    )
+    '''
+    run(
         ticker="GLDRUB",
 
         train_start=datetime(2024, 1, 1, tzinfo=timezone.utc),
@@ -255,3 +281,4 @@ if __name__ == "__main__":
 
         algorithm="nm" #nm или grid
     )
+    '''

@@ -20,7 +20,7 @@ class MeanReversionStrategy(BaseStrategy):
         self.ma_length = ma_length
 
         # 🔥 фиксированная трендовая MA (внутри файла)
-        self.trend_ma_length = 30
+        self.trend_ma_length = 20
 
         self.buy_threshold = buy_threshold
         self.sell_threshold = sell_threshold
